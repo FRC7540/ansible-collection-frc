@@ -1,0 +1,26 @@
+galaxy_info:
+  author: Shane Alvarez
+  description: Configures WPIlib development tools for a set of users
+  company: FRC Team 7540
+
+  # issue_tracker_url: http://example.com/issue/tracker
+  license: MIT
+
+  min_ansible_version: "2.1"
+
+  # If this a Container Enabled role, provide the minimum Ansible Container version.
+  # min_ansible_container_version:
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        # - jammy # 22.04 REL: Apr 2022 EOL: APR 2027
+        - focal # 20.04 REL: Apr 2023 EOL: APR 2025
+
+  galaxy_tags:
+    - frc
+    - first
+    - java
+
+dependencies:
+  []

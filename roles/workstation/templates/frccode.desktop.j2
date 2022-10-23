@@ -1,0 +1,18 @@
+[Desktop Entry]
+Name=FRC Visual Studio Code
+Comment=Official C++/Java IDE for the FIRST Robotics Competition
+GenericName=Text Editor
+Exec=/usr/share/code/code --unity-launch %F --extensions-dir "{{ wpilib_home.path }}/vscode/data/extensions" --user-data-dir "{{ wpilib_home.path }}/vscode/data/user-data"
+Icon={{ wpilib_home.path }}/frccode/wpilib-256.ico
+Type=Application
+StartupNotify=false
+StartupWMClass=Code
+Categories=TextEditor;Development;IDE;
+MimeType=text/plain;inode/directory;application/x-code-workspace;
+Actions=new-empty-window;
+Keywords=vscode;
+
+[Desktop Action new-empty-window]
+Name=New Empty Window
+Exec=/usr/share/code/code --new-window %F --extensions-dir "{{ wpilib_home.path }}/vscode/data/extensions" --user-data-dir "{{ wpilib_home.path }}/vscode/data/user-data"
+Icon={{ wpilib_home.path }}/frccode/wpilib-256.ico

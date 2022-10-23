@@ -1,0 +1,27 @@
+---
+# tasks file for java-workstation
+- name: create release directory
+  ansible.builtin.file:
+    path: "{{ wpilib_installer_root }}/"
+    state: directory
+    recurse: yes
+  register: wpilib_installer_major
+  become: true
+
+- name: download wpilib release
+  ansible.builtin.get_url:
+    url: "{{ wpilib_release_url }}/{{ wpilib_release_archive }}"
+    dest: "{{ wpilib_installer_root }}/{{ wpilib_release_archive }}"
+  become: true
+
+- name: unpack release
+  ansible.builtin.unarchive:
+    src: "{{ wpilib_installer_root }}/{{ wpilib_release_archive }}"
+    dest: "{{ wpilib_installer_root }}"
+    remote_src: yes
+
+- name: install wpilib for each user
+  include_tasks: user-install.yml
+  loop: "{{ wpilib_users }}"
+  loop_control:
+    loop_var: user
