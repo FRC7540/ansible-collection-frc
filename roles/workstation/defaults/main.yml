@@ -10,6 +10,7 @@ wpilib_release_archive: "{{ wpilib_base }}.tar.gz"
 wpilib_artifacts_archive: "{{ wpilib_base }}-artifacts.tar.gz"
 
 wpilib_release_url: "https://github.com/wpilibsuite/allwpilib/releases/download/v{{ wpilib_version }}"
+wpilib_release_hash: "md5:fe77f689d5da5f5d3b167f5ae50429b2"
 
 wpilib_installer_root: /usr/local/wpilib
 

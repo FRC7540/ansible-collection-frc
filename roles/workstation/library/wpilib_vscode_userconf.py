@@ -1,11 +1,6 @@
-#!/usr/bin/python
-
-from __future__ import absolute_import, division, print_function
 from pathlib import PosixPath
 import json
 import subprocess
-
-from importlib_metadata import version
 
 __metaclass__ = type
 

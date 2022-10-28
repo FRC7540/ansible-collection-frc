@@ -8,12 +8,14 @@
         owner: "{{ user }}"
         group: "{{ user }}"
       register: wpilib_home
+
     - name: install wpilib
       ansible.builtin.unarchive:
         src: "{{ wpilib_installer_root }}/{{ wpilib_base }}/{{ wpilib_artifacts_archive }}"
         dest: "{{ wpilib_home.path }}"
         owner: "{{ user }}"
         group: "{{ user }}"
+
     - name: create vscode dirs
       file:
         path: "{{ wpilib_home.path }}/{{ item }}"
@@ -24,9 +26,11 @@
       loop:
         - "vscode/data/extensions"
         - "vscode/data/user-data/User"
+
     - name: install wpilib extensions
       wpilib_vscode_userconf:
         path: "{{ wpilib_home.path }}"
+
     - name: configured vscode
       ansible.builtin.template:
         src: "{{ item.src }}"

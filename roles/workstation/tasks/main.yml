@@ -1,17 +1,28 @@
 ---
 # tasks file for java-workstation
-- name: create release directory
-  ansible.builtin.file:
-    path: "{{ wpilib_installer_root }}/"
-    state: directory
-    recurse: yes
-  register: wpilib_installer_major
+- name: install role dependencies
+  ansible.builtin.package:
+    name:
+      - python3
+      - tar
+      - gzip
+    state: present
+    use: apt
+  become: true
+
+- name: install dev tools
+  ansible.builtin.package:
+    name:
+      - git
+      - neovim
+      - tree
   become: true
 
 - name: download wpilib release
   ansible.builtin.get_url:
     url: "{{ wpilib_release_url }}/{{ wpilib_release_archive }}"
     dest: "{{ wpilib_installer_root }}/{{ wpilib_release_archive }}"
+    checksum: "{{ wpilib_release_hash }}"
   become: true
 
 - name: unpack release
@@ -19,6 +30,9 @@
     src: "{{ wpilib_installer_root }}/{{ wpilib_release_archive }}"
     dest: "{{ wpilib_installer_root }}"
     remote_src: yes
+    include: "{{ wpilib_base }}/{{ wpilib_artifacts_archive }}"
+    creates: "{{ wpilib_installer_root }}/{{ wpilib_base }}/{{ wpilib_artifacts_archive }}"
+  become: true
 
 - name: install wpilib for each user
   include_tasks: user-install.yml
