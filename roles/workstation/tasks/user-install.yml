@@ -55,4 +55,5 @@
         state: link
         owner: "{{ user }}"
         group: "{{ user }}"
+        mode: "0775"
       register: desktop_shortcut_home
