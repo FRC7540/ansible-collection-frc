@@ -58,12 +58,16 @@ def cppextpath(vsixpath: Path, vscode_config: dict) -> Path:
     cpp_vsix_path.touch()
     return cpp_vsix_path
 
+
 @pytest.fixture
 def vsix_extensions(wpilibextpath: Path, cppextpath: Path):
     return
 
+
 @pytest.fixture
-def wpilibdirectory(basedir: Path, vscodeconfigpath: Path, vsix_extensions: Path) -> Path:
+def wpilibdirectory(
+    basedir: Path, vscodeconfigpath: Path, vsix_extensions: Path
+) -> Path:
     return basedir
 
 
@@ -214,12 +218,14 @@ def test_BadDirectory_RaisesError(basedir, mock_vscode):
     with pytest.raises(Exception):
         WpiExtensionInstaller(basedir, mock_vscode)
 
+
 def test_MissingVSIX_RaisesError(basedir, vscodeconfigpath, mock_vscode):
     with pytest.raises(Exception):
         WpiExtensionInstaller(basedir, mock_vscode)
 
+
 def test_readExtensionsFromString():
-    data = b'esbenp.prettier-vscode@9.9.0\nms-python.python@2022.16.1\n'
+    data = b"esbenp.prettier-vscode@9.9.0\nms-python.python@2022.16.1\n"
     vscode = VSCode()
     actual = vscode.extensionStateFromSubprocessOutput(data)
     expected = [
@@ -233,4 +239,3 @@ def test_readExtensionsFromString():
         },
     ]
     assert expected == actual
-

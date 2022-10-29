@@ -8,9 +8,6 @@ galaxy_info:
 
   min_ansible_version: "2.1"
 
-  # If this a Container Enabled role, provide the minimum Ansible Container version.
-  # min_ansible_container_version:
-
   platforms:
     - name: Ubuntu
       versions:
@@ -21,6 +18,7 @@ galaxy_info:
     - frc
     - first
     - java
+    - wpilib
 
 dependencies:
   []

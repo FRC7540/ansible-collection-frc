@@ -1,17 +1,13 @@
 ---
-# defaults file for java-workstation
-wpilib_version_major: "2022"
-wpilib_version_minor: "4"
-wpilib_version_patch: "1"
-wpilib_version: "{{ wpilib_version_major }}.{{ wpilib_version_minor }}.{{ wpilib_version_patch }}"
+wpilib_release_version: "2022.4.1"
+wpilib_release_url: "https://github.com/wpilibsuite/allwpilib/releases/download/v{{ wpilib_release_version }}"
+wpilib_release_hash: "md5:fe77f689d5da5f5d3b167f5ae50429b2"
 
-wpilib_base: "WPILib_Linux-{{ wpilib_version }}"
+wpilib_base: "WPILib_Linux-{{ wpilib_release_version }}"
 wpilib_release_archive: "{{ wpilib_base }}.tar.gz"
 wpilib_artifacts_archive: "{{ wpilib_base }}-artifacts.tar.gz"
 
-wpilib_release_url: "https://github.com/wpilibsuite/allwpilib/releases/download/v{{ wpilib_version }}"
-wpilib_release_hash: "md5:fe77f689d5da5f5d3b167f5ae50429b2"
-
 wpilib_installer_root: /usr/local/wpilib
 
-wpilib_users: [ "shanealvarez" ]
+wpilib_users:
+  - "{{ ansible_env.USER }}"

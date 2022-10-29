@@ -3,11 +3,24 @@
 - name: install role dependencies
   ansible.builtin.package:
     name:
+      - gzip
       - python3
       - tar
-      - gzip
     state: present
     use: apt
+  become: true
+
+- name: install vscode
+  include_role:
+    name: gantsign.visual-studio-code
+  when: ansible_distribution != 'Pop!_OS'
+
+- name: install vscode (Pop! OS)
+  ansible.builtin.package:
+    name:
+      - code
+    use: apt
+  when: ansible_distribution == 'Pop!_OS'
   become: true
 
 - name: install dev tools
@@ -16,6 +29,13 @@
       - git
       - neovim
       - tree
+  become: true
+
+- name: create wpilib global install root
+  ansible.builtin.file:
+    dest: "{{ wpilib_installer_root }}"
+    state: directory
+    recurse: true
   become: true
 
 - name: download wpilib release
@@ -29,9 +49,11 @@
   ansible.builtin.unarchive:
     src: "{{ wpilib_installer_root }}/{{ wpilib_release_archive }}"
     dest: "{{ wpilib_installer_root }}"
-    remote_src: yes
     include: "{{ wpilib_base }}/{{ wpilib_artifacts_archive }}"
-    creates: "{{ wpilib_installer_root }}/{{ wpilib_base }}/{{ wpilib_artifacts_archive }}"
+    creates:
+      "{{ wpilib_installer_root }}/{{ wpilib_base }}/{{ wpilib_artifacts_archive
+      }}"
+    remote_src: true
   become: true
 
 - name: install wpilib for each user

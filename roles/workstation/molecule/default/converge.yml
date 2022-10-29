@@ -1,7 +1,14 @@
 ---
 - name: Converge
   hosts: all
+  vars:
+    wpilib_users:
+      - vagrant
   tasks:
+    - name: "create user"
+      ansible.builtin.user:
+        name: vagrant
+        state: present
     - name: "Include workstation"
       include_role:
         name: "workstation"
