@@ -33,26 +33,24 @@
 
 - name: create wpilib global install root
   ansible.builtin.file:
-    dest: "{{ wpilib_installer_root }}"
+    dest: "{{ wpilib_install_root }}"
     state: directory
     recurse: true
   become: true
 
 - name: download wpilib release
   ansible.builtin.get_url:
-    url: "{{ wpilib_release_url }}/{{ wpilib_release_archive }}"
-    dest: "{{ wpilib_installer_root }}/{{ wpilib_release_archive }}"
+    url: "{{ wpilib_url }}/{{ wpilib_archive }}"
+    dest: "{{ wpilib_install_root }}/{{ wpilib_archive }}"
     checksum: "{{ wpilib_release_hash }}"
   become: true
 
 - name: unpack release
   ansible.builtin.unarchive:
-    src: "{{ wpilib_installer_root }}/{{ wpilib_release_archive }}"
-    dest: "{{ wpilib_installer_root }}"
-    include: "{{ wpilib_base }}/{{ wpilib_artifacts_archive }}"
-    creates:
-      "{{ wpilib_installer_root }}/{{ wpilib_base }}/{{ wpilib_artifacts_archive
-      }}"
+    src: "{{ wpilib_install_root }}/{{ wpilib_archive }}"
+    dest: "{{ wpilib_install_root }}"
+    include: "{{ wpilib_artifacts_archive }}"
+    creates: "{{ wpilib_install_root }}/{{ wpilib_artifacts_archive }}"
     remote_src: true
   become: true
 

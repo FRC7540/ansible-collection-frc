@@ -1,0 +1,8 @@
+---
+wpilib_release_version: "2022.4.1"
+wpilib_release_hash: "md5:fe77f689d5da5f5d3b167f5ae50429b2"
+
+wpilib_install_root: /usr/local/wpilib
+
+wpilib_users:
+  - "{{ ansible_env.USER }}"

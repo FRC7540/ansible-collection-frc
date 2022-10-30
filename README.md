@@ -1,27 +1,22 @@
-# Ansible Roles: FRC7540 WPILib
+# Ansible Role: WPILib
 
-A set of Ansible roles that manage WPILib FRC Development Tools.
+Installs [WPILib] development tools for multiple users.
+
+This presents at alternative to manually installation use the WPILib installer,
+which is particularly useful when using shared workstations.
+
+[wpilib]: https://wpilib.org/
 
 ## Installation
 
-Use [ansible-galaxy] to install the collection.
+Use [ansible-galaxy] to install the role
 
 ```bash
-ansible-galaxy collection install git+https://github.com/FRC7540/frc-ansible.git
+ansible-galaxy role install git+https://github.com/FRC7540/ansible-role-wpilib.git
 ```
 
 [ansible-galaxy]:
   https://docs.ansible.com/ansible/devel/collections_guide/collections_installing.html
-
-## Example Playbook
-
-```yaml
----
-- hosts:
-    - localhost
-  roles:
-    - frc7540.wpilib.workstation
-```
 
 ## Requirements
 
@@ -32,13 +27,77 @@ with Ubuntu/PopOS 22.04 Jammy. The install is successful, but certain tools
 won't work, e.g., the robot simulator. It's likely that support for more recent
 distributions will come with FRC tools for the 2023 season.
 
-## Roles
+This role has been tested for Java projects only. C++ projects may not work.
 
-| roles         | synopsis                       |
-| ------------- | ------------------------------ |
-| [workstation] | installs frc development tools |
+## Role Variables
 
-[workstation]: ./roles/workstation/README.md
+| variable                 | description                                               | default/example                                   |
+| ------------------------ | --------------------------------------------------------- | ------------------------------------------------- |
+| `wpilib_release_version` | WPILib release version                                    | `2022.4.1`                                        |
+| `wpilib_release_hash`    | WPILib release version hash (usually a sha256 or md5)     | `md5:fe77..`                                      |
+| `wpilib_install_root`    | Directory to store WPILib archives prior to user installs | `/usr/local/wpilib`                               |
+| `wpilib_users`           | A list of users that will get a WPILib installation       | `{{ ansible_env.USER }}` (i.e., the current user) |
+
+You can find the latest WPILib release version and archive hashes
+[here](https://github.com/wpilibsuite/allwpilib/releases).
+
+## Dependencies
+
+This role depends on [gantsign.visual-studio-code] for adding the microsoft
+repos for installing Visual Studio Code, with the exeption of Pop! OS. No
+special configruations are necessary.
+
+[gantsign.visual-studio-code]:
+  https://github.com/gantsign/ansible-role-visual-studio-code
+
+## Example Playbook
+
+Create a `site.yml` file with the following content.
+
+```yaml
+---
+- hosts:
+    - localhost
+  roles:
+    - frc7540.wpilib
+      wpilib_users:
+        - jane
+        - john
+```
+
+To install it, use [ansible-playbook]:
+
+```bash
+ansible-playbook site.yml
+```
+
+[ansible-playbook]:
+  https://docs.ansible.com/ansible/latest/cli/ansible-playbook.html
+
+## Comparison to the WPILib Installers
+
+The installation made by this role differes from the WPILib Linux installer in
+several ways:
+
+- the mono based installer is not used at all
+- the system vscode installation is used
+  - extensions still installed per-user in custom location
+  - user data still installed per-user in custom location
+- the desktop shortcut is slightly different
+  - uses vscode flags to setting extensions and user-data
+
+## Known Issues
+
+- user install includes more directories than is strictly necessary
+- user install task is slow when running playbooks a second time
+- included gradle is not installed into cache location
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to
+discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
 
 ## License
 

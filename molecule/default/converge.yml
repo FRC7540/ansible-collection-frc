@@ -4,11 +4,10 @@
   vars:
     wpilib_users:
       - vagrant
-  tasks:
-    - name: "create user"
+  pre_tasks:
+    - name: create user
       ansible.builtin.user:
         name: vagrant
         state: present
-    - name: "Include workstation"
-      include_role:
-        name: "workstation"
+  roles:
+    - role: ansible-role-wpilib

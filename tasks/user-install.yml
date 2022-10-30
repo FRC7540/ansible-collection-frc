@@ -13,7 +13,7 @@
 
     - name: install wpilib
       ansible.builtin.unarchive:
-        src: "{{ wpilib_installer_root }}/{{ wpilib_base }}/{{ wpilib_artifacts_archive }}"
+        src: "{{ wpilib_install_root }}/{{ wpilib_artifacts_archive }}"
         dest: "{{ wpilib_home.path }}"
         owner: "{{ user }}"
         group: "{{ user }}"
