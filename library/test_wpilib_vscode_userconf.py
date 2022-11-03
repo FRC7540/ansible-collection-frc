@@ -2,7 +2,7 @@ from pathlib import Path
 import json
 import pytest
 
-from wpilib_vscode_userconf import *
+from library.wpilib_vscode_userconf import *
 
 
 @pytest.fixture

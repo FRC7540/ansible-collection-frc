@@ -11,3 +11,17 @@ provisioner:
   name: ansible
 verifier:
   name: ansible
+scenario:
+  name: default
+  test_sequence:
+    - lint
+    - destroy
+    # - dependency
+    - syntax
+    - create
+    # - prepare
+    - converge
+    - idempotence
+    # - side_effect
+    - verify
+    - destroy

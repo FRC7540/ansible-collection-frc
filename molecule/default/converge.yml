@@ -5,9 +5,11 @@
     wpilib_users:
       - vagrant
   pre_tasks:
-    - name: create user
+    - name: Create user
       ansible.builtin.user:
         name: vagrant
         state: present
-  roles:
-    - role: ansible-role-wpilib
+  tasks:
+    - name: Include Role
+      include_role:
+        name: wpilib

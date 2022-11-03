@@ -1,5 +1,7 @@
 galaxy_info:
-  author: Shane Alvarez
+  author: shanealv
+  role_name: wpilib
+  namespace: frc7540
   description: Configures WPIlib development tools for a set of users
   company: FRC Team 7540
 
@@ -19,5 +21,4 @@ galaxy_info:
     - first
     - wpilib
 
-dependencies:
-  []
+dependencies: []

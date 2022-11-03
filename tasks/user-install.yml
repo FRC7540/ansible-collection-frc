@@ -3,7 +3,7 @@
   become_user: "{{ user }}"
   block:
     - name: create wpilib directory
-      file:
+      ansible.builtin.file:
         path: "/home/{{ user }}/wpilib/{{ wpilib_release_version | split('.') | first }}"
         state: directory
         recurse: true
@@ -11,15 +11,23 @@
         group: "{{ user }}"
       register: wpilib_home
 
+    - name: check installed version
+      ansible.builtin.shell:
+        cmd: "jq '.wpilibExtension.version' {{ wpilib_home.path }}/installUtils/vscodeConfig.json | xargs echo"
+      register: installed_wpilib_version
+      changed_when: installed_wpilib_version.stdout != wpilib_release_version
+
     - name: install wpilib
       ansible.builtin.unarchive:
         src: "{{ wpilib_install_root }}/{{ wpilib_artifacts_archive }}"
         dest: "{{ wpilib_home.path }}"
         owner: "{{ user }}"
         group: "{{ user }}"
+        remote_src: True
+      when: installed_wpilib_version.stdout != wpilib_release_version
 
     - name: create necessary directories
-      file:
+      ansible.builtin.file:
         path: "{{ item }}"
         state: directory
         recurse: true
@@ -35,18 +43,21 @@
       wpilib_vscode_userconf:
         path: "{{ wpilib_home.path }}"
 
-    - name: render frc vscode config files and shortcuts
+    - name: render frc vscode settings
       ansible.builtin.template:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
+        src: settings.json.j2
+        dest: "{{ wpilib_home.path }}/vscode/data/user-data/User/settings.json"
         owner: "{{ user }}"
         group: "{{ user }}"
         mode: "0664"
-      loop:
-        - src: settings.json.j2
-          dest: "{{ wpilib_home.path }}/vscode/data/user-data/User/settings.json"
-        - src: frccode.desktop.j2
-          dest: "/home/{{ user }}/.local/share/applications/frccode.desktop"
+
+    - name: render frc vscode shortcut
+      ansible.builtin.template:
+        src: frccode.desktop.j2
+        dest: "/home/{{ user }}/.local/share/applications/frccode.desktop"
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: "0775"
 
     - name: create desktop shortcut link
       ansible.builtin.file:
@@ -56,4 +67,3 @@
         owner: "{{ user }}"
         group: "{{ user }}"
         mode: "0775"
-      register: desktop_shortcut_home

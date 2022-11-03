@@ -4,6 +4,7 @@
   ansible.builtin.package:
     name:
       - gzip
+      - jq
       - python3
       - tar
     state: present
