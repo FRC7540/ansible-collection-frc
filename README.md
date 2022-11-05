@@ -14,7 +14,7 @@ The following roles are included:
 Use [ansible-galaxy] to install the collection.
 
 ```bash
-ansible-galaxy collection install git+https://github.com/FRC7540/ansible-role-wpilib.git
+ansible-galaxy collection install git+https://github.com/FRC7540/ansible-collection-frc.git
 ```
 
 [ansible-galaxy]:

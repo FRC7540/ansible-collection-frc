@@ -17,8 +17,8 @@ tags:
   - first
   - frc
 
-repository: http://github.com/frc7540/ansible-role-wpilib
-issues: http://github.com/frc7540/ansible-role-wpilib/issues
+repository: http://github.com/frc7540/ansible-collection-frc
+issues: http://github.com/frc7540/ansible-collection-frc/issues
 
 dependencies: {}
 build_ignore:
