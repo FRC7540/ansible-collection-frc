@@ -1,6 +1,5 @@
 ---
-# tasks file for java-workstation
-- name: install role dependencies
+- name: Install role dependencies
   ansible.builtin.package:
     name:
       - gzip
@@ -11,12 +10,12 @@
     use: apt
   become: true
 
-- name: install vscode
+- name: Install vscode
   include_role:
     name: gantsign.visual-studio-code
   when: ansible_distribution != 'Pop!_OS'
 
-- name: install vscode (Pop! OS)
+- name: Install vscode (Pop! OS)
   ansible.builtin.package:
     name:
       - code
@@ -24,7 +23,7 @@
   when: ansible_distribution == 'Pop!_OS'
   become: true
 
-- name: install dev tools
+- name: Install dev tools
   ansible.builtin.package:
     name:
       - git
@@ -32,21 +31,21 @@
       - tree
   become: true
 
-- name: create wpilib global install root
+- name: Create wpilib global install root
   ansible.builtin.file:
     dest: "{{ wpilib_install_root }}"
     state: directory
     recurse: true
   become: true
 
-- name: download wpilib release
+- name: Download wpilib release
   ansible.builtin.get_url:
     url: "{{ wpilib_url }}/{{ wpilib_archive }}"
     dest: "{{ wpilib_install_root }}/{{ wpilib_archive }}"
     checksum: "{{ wpilib_release_hash }}"
   become: true
 
-- name: unpack release
+- name: Unpack release
   ansible.builtin.unarchive:
     src: "{{ wpilib_install_root }}/{{ wpilib_archive }}"
     dest: "{{ wpilib_install_root }}"
@@ -55,7 +54,7 @@
     remote_src: true
   become: true
 
-- name: install wpilib for each user
+- name: Install wpilib for each user
   include_tasks: user-install.yml
   loop: "{{ wpilib_users }}"
   loop_control:

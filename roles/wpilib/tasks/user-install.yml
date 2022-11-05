@@ -1,8 +1,8 @@
-- name: install wpilib for each user
+- name: Install wpilib for each user
   become: true
   become_user: "{{ user }}"
   block:
-    - name: create wpilib directory
+    - name: Create wpilib directory
       ansible.builtin.file:
         path: "/home/{{ user }}/wpilib/{{ wpilib_release_version | split('.') | first }}"
         state: directory
@@ -11,13 +11,13 @@
         group: "{{ user }}"
       register: wpilib_home
 
-    - name: check installed version
+    - name: Check installed version
       ansible.builtin.shell:
         cmd: "jq '.wpilibExtension.version' {{ wpilib_home.path }}/installUtils/vscodeConfig.json | xargs echo"
       register: installed_wpilib_version
       changed_when: installed_wpilib_version.stdout != wpilib_release_version
 
-    - name: install wpilib
+    - name: Install wpilib
       ansible.builtin.unarchive:
         src: "{{ wpilib_install_root }}/{{ wpilib_artifacts_archive }}"
         dest: "{{ wpilib_home.path }}"
@@ -26,7 +26,7 @@
         remote_src: True
       when: installed_wpilib_version.stdout != wpilib_release_version
 
-    - name: create necessary directories
+    - name: Create necessary directories
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
@@ -39,11 +39,11 @@
         - "/home/{{ user }}/.local/share/applications"
         - "/home/{{ user }}/Desktop"
 
-    - name: install wpilib extensions
-      wpilib_vscode_userconf:
+    - name: Install wpilib extensions
+      frc7540.frc.wpilib_extensions:
         path: "{{ wpilib_home.path }}"
 
-    - name: render frc vscode settings
+    - name: Render FRC vscode settings
       ansible.builtin.template:
         src: settings.json.j2
         dest: "{{ wpilib_home.path }}/vscode/data/user-data/User/settings.json"
@@ -51,7 +51,7 @@
         group: "{{ user }}"
         mode: "0664"
 
-    - name: render frc vscode shortcut
+    - name: Render frc vscode shortcut
       ansible.builtin.template:
         src: frccode.desktop.j2
         dest: "/home/{{ user }}/.local/share/applications/frccode.desktop"
@@ -59,7 +59,7 @@
         group: "{{ user }}"
         mode: "0775"
 
-    - name: create desktop shortcut link
+    - name: Create desktop shortcut link
       ansible.builtin.file:
         src: "/home/{{ user }}/.local/share/applications/frccode.desktop"
         path: "/home/{{ user }}/Desktop/frccode.desktop"

@@ -2,7 +2,7 @@ from pathlib import Path
 import json
 import pytest
 
-from library.wpilib_vscode_userconf import *
+from modules.wpilib_extensions import WpiExtensionInstaller, VSCode
 
 
 @pytest.fixture
@@ -89,7 +89,7 @@ def test_UninitializedDirectory_SummarizesExtensions(wpilibdirectory, mock_vscod
         },
     ]
     assert expected_config == actual_config
-    assert wpilib_config.is_install_required() == True
+    assert wpilib_config.is_install_required()
 
 
 def test_InitializedDirectory_ExtensionsPresent(wpilibdirectory, mock_vscode):
@@ -120,7 +120,7 @@ def test_InitializedDirectory_ExtensionsPresent(wpilibdirectory, mock_vscode):
         },
     ]
     assert expected_config == actual_config
-    assert wpilib_config.is_install_required() == False
+    assert not wpilib_config.is_install_required()
 
 
 def test_OneMismatchedVersion_ExtensionAbsent(wpilibdirectory, mock_vscode):
@@ -151,7 +151,7 @@ def test_OneMismatchedVersion_ExtensionAbsent(wpilibdirectory, mock_vscode):
         },
     ]
     assert expected_config == actual_config
-    assert wpilib_config.is_install_required() == True
+    assert wpilib_config.is_install_required()
 
 
 def test_UnmatchedExtension_ExtensionAbsent(wpilibdirectory, mock_vscode):
@@ -178,7 +178,7 @@ def test_UnmatchedExtension_ExtensionAbsent(wpilibdirectory, mock_vscode):
         },
     ]
     assert expected_config == actual_config
-    assert wpilib_config.is_install_required() == True
+    assert wpilib_config.is_install_required()
 
 
 def test_NoChangesNeeded_DoesNotTryInstall(wpilibdirectory, mock_vscode, mocker):

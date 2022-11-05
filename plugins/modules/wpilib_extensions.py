@@ -2,6 +2,8 @@ from pathlib import PosixPath
 import json
 import subprocess
 
+from ansible.module_utils.basic import AnsibleModule
+
 __metaclass__ = type
 
 DOCUMENTATION = r"""
@@ -12,7 +14,7 @@ short_description: Configures vscode user data for a vscode install
 
 version_added: "1.0.0"
 
-description: > 
+description: >
     Configures vscode extensions within a users wpilib installation, usually
     ~/wpilib/<year>. It configures a vscode/data directory with all the
     extensions provided in vsCodeExtensions/ and listed in
@@ -24,8 +26,7 @@ options:
         description: the root path for the wpilib user installation
         required: true
         type: str
-# Specify this value according to your collection
-# in format of namespace.collection.doc_fragment_name
+
 extends_documentation_fragment: []
 
 author:
@@ -33,14 +34,12 @@ author:
 """
 
 EXAMPLES = r"""
-# Pass in a message
 - name: Configure VSCode for WPILib
   shanealv.frc.wpilib_vscode_userconf:
     path: /home/vagrant/wpilib/2022
 """
 
 RETURN = r"""
-# These are examples of possible return values, and in general should use other names for return values.
 extension_dir:
     description: The path of the extensions directory
     type: str
@@ -52,8 +51,6 @@ user_data_dir:
     returned: always
     sample: '/home/vagrant/wpilib/2022/vscode/data/user-data'
 """
-
-from ansible.module_utils.basic import AnsibleModule
 
 
 class VSCode:

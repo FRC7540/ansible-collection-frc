@@ -9,7 +9,5 @@
       ansible.builtin.user:
         name: vagrant
         state: present
-  tasks:
-    - name: Include Role
-      include_role:
-        name: wpilib
+  roles:
+    - role: frc7540.frc.wpilib

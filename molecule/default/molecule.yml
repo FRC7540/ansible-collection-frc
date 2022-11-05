@@ -1,27 +1,36 @@
 ---
 dependency:
   name: galaxy
+  options:
+    role-file: requirements.yml
+    requirements-file: requirements.yml
+
+lint: |
+  set -e
+  yamllint roles
+  ansible-lint
+  flake8 plugins
+
 driver:
   name: docker
+
 platforms:
   - name: ubuntu-focal
     image: library/ubuntu:20.04
     pre_build_image: false
+
 provisioner:
   name: ansible
 verifier:
   name: ansible
+
 scenario:
   name: default
   test_sequence:
     - lint
     - destroy
-    # - dependency
     - syntax
     - create
-    # - prepare
     - converge
     - idempotence
-    # - side_effect
-    - verify
     - destroy
