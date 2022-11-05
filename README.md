@@ -36,7 +36,7 @@ If you just want to install wpilib for the current user, create a playbook
 Run it using:
 
 ```bash
-ansible-playbook site.yml
+ansible-playbook site.yml -bK
 ```
 
 ## Contributing
