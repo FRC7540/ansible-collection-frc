@@ -59,6 +59,17 @@
         group: "{{ user }}"
         mode: "0775"
 
+    - name: Check if shortcut is trusted
+      ansible.builtin.shell:
+        cmd: "dbus-launch gio info /home/{{ user }}/.local/share/applications/frccode.desktop | grep metadata::trusted | xargs echo | cut -d ' ' -f 2"
+      register: shortcut_trusted
+      changed_when: shortcut_trusted.stdout != "true"
+
+    - name: Make shortcut trusted
+      ansible.builtin.shell:
+        cmd: "dbus-launch gio set /home/{{ user }}/.local/share/applications/frccode.desktop metadata::trusted true"
+      when: shortcut_trusted.stdout != "true"
+
     - name: Create desktop shortcut link
       ansible.builtin.file:
         src: "/home/{{ user }}/.local/share/applications/frccode.desktop"

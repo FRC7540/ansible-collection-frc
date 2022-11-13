@@ -3,3 +3,5 @@ skip_list:
   - yaml
   - fqcn-builtins
   - name[template]
+warn_list:
+  - command-instead-of-shell

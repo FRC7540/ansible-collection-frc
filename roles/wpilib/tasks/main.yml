@@ -2,6 +2,7 @@
 - name: Install role dependencies
   ansible.builtin.package:
     name:
+      - gnome-terminal
       - gzip
       - jq
       - python3

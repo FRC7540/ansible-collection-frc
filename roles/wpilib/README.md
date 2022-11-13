@@ -9,7 +9,7 @@ which is particularly useful when using shared workstations.
 
 ## Requirements
 
-These roles are only tested using Ubuntu/PopOS 20.04 Focal.
+These roles are only tested using Ubuntu/PopOS 20.04 Focal with GNOME desktop.
 
 Experiments indicate that the most recent FRC tools (2022.04.1) is incompatible
 with Ubuntu/PopOS 22.04 Jammy. The install is successful, but certain tools
@@ -67,5 +67,4 @@ several ways:
 ## Known Issues
 
 - user install includes more directories than is strictly necessary
-- user install task is slow when running playbooks a second time
 - included gradle is not installed into cache location
