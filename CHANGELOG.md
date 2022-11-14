@@ -8,6 +8,10 @@ and this project adheres to
 
 ## Unreleased
 
+### Added
+
+- install WPILib provided gradle
+
 ### Changed
 
 - desktop shortcut is now trusted by default

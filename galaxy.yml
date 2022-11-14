@@ -20,7 +20,8 @@ tags:
 repository: http://github.com/frc7540/ansible-collection-frc
 issues: http://github.com/frc7540/ansible-collection-frc/issues
 
-dependencies: {}
+dependencies:
+  community.general: "*"
 build_ignore:
   - .pytest_cache
   - .venv

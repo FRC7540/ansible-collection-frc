@@ -78,3 +78,30 @@
         owner: "{{ user }}"
         group: "{{ user }}"
         mode: "0775"
+
+    - name: Slurp Gradle configuration
+      ansible.builtin.slurp:
+        src: "{{ wpilib_home.path }}/installUtils/fullConfig.json"
+      register: gradle_config
+
+    - name: Set Gradle Facts
+      ansible.builtin.set_fact:
+        gradle_config_hash: "{{ gradle_config.content | b64decode | from_json | json_query('Gradle.Hash') }}"
+        gradle_config_name: "{{ (gradle_config.content | b64decode | from_json | json_query('Gradle.ZipName') | splitext)[0] }}"
+
+    - name: Create Gradle installation directories
+      ansible.builtin.file:
+        path: "/home/{{ user }}/{{ item }}/{{ gradle_config_name }}/{{ gradle_config_hash }}"
+        state: directory
+        recurse: true
+        owner: "{{ user }}"
+        group: "{{ user }}"
+      loop: "{{ gradle_install_dirs }}"
+      register: gradle_install_paths
+
+    - name: Install Gradle archives
+      ansible.builtin.unarchive:
+        src: "{{ wpilib_home.path }}/installUtils/{{ gradle_config_name }}.zip"
+        dest: "{{ item }}"
+        remote_src: yes
+      loop: "{{ gradle_install_paths.results | map(attribute='path') }}"
