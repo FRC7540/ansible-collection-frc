@@ -1,0 +1,26 @@
+---
+test_wpilib_mode: "0775"
+test_wpilib_user: "vagrant"
+test_wpilib_group: "vagrant"
+test_wpilib_home: "/home/vagrant"
+
+test_install:
+  wpilib_version: 2022.4.1
+  wpilib_major_version: 2022
+
+test_install_home: "{{ test_wpilib_home }}/wpilib/{{ test_install.wpilib_major_version }}"
+
+test_gradle:
+  version: 7.3.3
+  hash: 6a41zxkdtcxs8rphpq6y0069z
+
+test_vscode:
+  extensions:
+    - ms-vscode.cpptools-1.7.1
+    - redhat.java-1.1.0
+    - vscjava.vscode-java-debug-0.37.0
+    - vscjava.vscode-java-dependency-0.18.8
+    - wpilibsuite.vscode-wpilib-2022.4.1
+
+test_shortcut:
+  mode: '0775'

@@ -1,0 +1,23 @@
+- name: Gather information on app shortcut
+  ansible.builtin.stat:
+    path: "{{ test_wpilib_home }}/.local/share/applications/frccode.desktop"
+  register: desktop_shortcut_file
+
+- name: Assert app shortcut properties
+  ansible.builtin.assert:
+    that:
+      - desktop_shortcut_file.stat.exists
+      - desktop_shortcut_file.stat.mode == test_shortcut.mode
+
+- name: Check shortcut metadata
+  ansible.builtin.shell:
+    cmd: "dbus-launch gio info {{ desktop_shortcut_file.stat.path }} | grep metadata::trusted | xargs echo | cut -d ' ' -f 2"
+  register: shortcut_trusted
+  changed_when: false
+  become: true
+  become_user: "{{ test_wpilib_user }}"
+
+- name: Assert app shortcut is trusted
+  ansible.builtin.assert:
+    that:
+      - shortcut_trusted.stdout == "true"

@@ -1,0 +1,9 @@
+---
+- name: Verify
+  hosts: all
+  vars:
+    test_wpilib_user: vagrant
+    wpilib_users:
+      - "{{ test_wpilib_user }}"
+  roles:
+    - role: test_wpilib

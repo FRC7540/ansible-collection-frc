@@ -1,0 +1,9 @@
+---
+- name: Include Gradle tests
+  ansible.builtin.include_tasks: test_gradle.yml
+
+- name: Include VSCode tests
+  ansible.builtin.include_tasks: test_vscode.yml
+
+- name: Include app shortcut tests
+  ansible.builtin.include_tasks: test_shortcuts.yml

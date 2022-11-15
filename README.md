@@ -17,15 +17,6 @@ Use [ansible-galaxy] to install the collection.
 ansible-galaxy collection install git+https://github.com/FRC7540/ansible-collection-frc.git
 ```
 
-You will also need to manually install the `jmespath` python package.
-
-```bash
-# option 1: using pip
-$ python3 -m pip install -U jmespath
-# option 2: using apt
-$ sudo apt install python3-jmespath
-```
-
 [ansible-galaxy]:
   https://docs.ansible.com/ansible/devel/collections_guide/collections_installing.html
 

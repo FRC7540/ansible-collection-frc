@@ -1,0 +1,40 @@
+---
+- name: Gather information on extensions
+  ansible.builtin.stat:
+    path: "{{ test_install_home }}/vscode/data/extensions/{{ item }}"
+  loop: "{{ test_vscode.extensions }}"
+  register: extensions
+
+- name: Assert extensions are present
+  ansible.builtin.assert:
+    that:
+      - extensions_dir.stat.exists
+  loop: "{{ extensions.results }}"
+  loop_control:
+    loop_var: extensions_dir
+
+- name: Gather information on installed settings
+  ansible.builtin.stat:
+    path: "{{ test_install_home }}/vscode/data/user-data/User/settings.json"
+  register: settings_file
+
+- name: Assert settings file is created
+  ansible.builtin.assert:
+    that:
+      - settings_file.stat.exists
+
+- name: Read settings file
+  ansible.builtin.slurp:
+    path: "{{ test_install_home }}/vscode/data/user-data/User/settings.json"
+  register: settings
+
+- name: Extract facts from settings
+  ansible.builtin.set_fact:
+    settings: "{{ settings.content | b64decode | from_json }}"
+
+- name: Assert Configuration
+  ansible.builtin.assert:
+    that:
+      - settings['java.home'] == "{{ test_install_home }}/jdk"
+      - settings['terminal.integrated.env.linux'].JAVA_HOME == "{{ test_install_home }}/jdk"
+      - settings['terminal.integrated.env.linux'].PATH == "{{ test_install_home }}/jdk/bin:${env:PATH}"
