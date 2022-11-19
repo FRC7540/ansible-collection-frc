@@ -2,11 +2,14 @@
 - name: Install role dependencies
   ansible.builtin.package:
     name:
+      - dbus-x11
       - gnome-terminal
       - gzip
+      - libglib2.0-dev
       - jq
       - python3
       - tar
+      - unzip
     state: present
     use: apt
   become: true

@@ -98,9 +98,28 @@
       loop: "{{ gradle_install_dirs }}"
       register: gradle_install_paths
 
+    - name: Save a copy of the Gradle archive
+      ansible.builtin.copy:
+        src: "{{ wpilib_home.path }}/installUtils/{{ full_config.Gradle.ZipName }}"
+        dest: "{{ item }}/{{ full_config.Gradle.ZipName }}"
+        remote_src: yes
+      loop: "{{ gradle_install_paths.results | map(attribute='path') }}"
+
     - name: Install Gradle archives
       ansible.builtin.unarchive:
-        src: "{{ wpilib_home.path }}/installUtils/{{ full_config.Gradle.ZipName }}"
+        src: "{{ item }}/{{ full_config.Gradle.ZipName }}"
         dest: "{{ item }}"
         remote_src: yes
+      loop: "{{ gradle_install_paths.results | map(attribute='path') }}"
+
+    - name: Create Gradle lck files
+      ansible.builtin.copy:
+        content: ""
+        dest: "{{ item }}/{{ full_config.Gradle.ZipName }}.lck"
+      loop: "{{ gradle_install_paths.results | map(attribute='path') }}"
+
+    - name: Create Gradle ok files
+      ansible.builtin.copy:
+        content: ""
+        dest: "{{ item }}/{{ full_config.Gradle.ZipName }}.ok"
       loop: "{{ gradle_install_paths.results | map(attribute='path') }}"
