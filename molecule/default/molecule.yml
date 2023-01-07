@@ -18,6 +18,9 @@ platforms:
   - name: ubuntu-focal
     image: library/ubuntu:20.04
     pre_build_image: false
+  - name: ubuntu-jammy
+    image: library/ubuntu:22.04
+    pre_build_image: false
 
 provisioner:
   name: ansible

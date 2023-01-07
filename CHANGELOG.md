@@ -15,6 +15,7 @@ and this project adheres to
 ### Changed
 
 - desktop shortcut is now trusted by default
+- updated to WPILib 2023.1.1
 
 ## [1.0.0] - 2022-11-05
 
