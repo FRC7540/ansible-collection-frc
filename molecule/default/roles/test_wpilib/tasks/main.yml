@@ -7,3 +7,6 @@
 
 - name: Include app shortcut tests
   ansible.builtin.include_tasks: test_shortcuts.yml
+
+- name: Include Balena etcher tests
+  ansible.builtin.include_tasks: test_balena_etcher.yml

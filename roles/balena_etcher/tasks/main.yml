@@ -1,0 +1,10 @@
+---
+- name: Get installed packages
+  ansible.builtin.package_facts:
+    manager: "apt"
+
+- name: Install balena etcher
+  apt:
+    deb: "{{ balena_etcher_url }}"
+  become: true
+  when: "'balena-etcher' not in ansible_facts.packages or ansible_facts.packages['balena-etcher'] != balena_etcher_version"

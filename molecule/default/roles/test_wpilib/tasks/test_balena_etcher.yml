@@ -1,0 +1,10 @@
+---
+- name: get installed packages
+  ansible.builtin.package_facts:
+    manager: "auto"
+
+- name: check if balena etcher is installed
+  ansible.builtin.assert:
+    that:
+      - "'balena-etcher' in ansible_facts.packages"
+

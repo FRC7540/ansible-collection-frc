@@ -1,13 +1,13 @@
 ---
 namespace: frc7540
 name: frc
-version: 1.1.0
+version: 1.2.0
 readme: README.md
 
 authors:
-- Shane Alvarez <shane.alv@gmail.com>
+  - Shane Alvarez <shane.alv@gmail.com>
 
-description: A few roles for managing WPILib installations
+description: A few roles for configuring FRC Linux development workstations.
 
 license:
   - MIT
@@ -16,6 +16,7 @@ tags:
   - wpilib
   - first
   - frc
+  - ubuntu
 
 repository: http://github.com/frc7540/ansible-collection-frc
 issues: http://github.com/frc7540/ansible-collection-frc/issues

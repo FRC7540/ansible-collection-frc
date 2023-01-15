@@ -11,3 +11,4 @@
         state: present
   roles:
     - role: frc7540.frc.wpilib
+    - role: frc7540.frc.balena_etcher
