@@ -9,7 +9,7 @@ The following roles are included:
 - [vision_tools]: installs Balena Etcher and GRIP
 
 [wpilib]: ./roles/wpilib/README.md
-[vision_tools]: ./roles/balena_etcher/README.md
+[vision_tools]: ./roles/vision_tools/README.md
 
 ## Installation
 
