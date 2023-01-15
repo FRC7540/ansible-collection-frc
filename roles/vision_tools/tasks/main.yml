@@ -1,0 +1,25 @@
+---
+- name: Get installed packages
+  ansible.builtin.package_facts:
+    manager: "apt"
+
+- name: Install balena etcher
+  apt:
+    deb: "{{ balena_etcher_url }}"
+  become: true
+  when: "'balena-etcher' not in ansible_facts.packages or balena_etcher_version not in ansible_facts.packages['balena-etcher'][0]['version']"
+
+# Fixes GRIP install for ubuntu-jammy container
+- name: Make sure desktop-directories exists
+  file:
+    path: /usr/share/desktop-directories
+    state: directory
+    owner: root
+    group: root
+  become: true
+
+- name: Install GRIP
+  apt:
+    deb: "{{ grip_url }}"
+  become: true
+  when: "'grip' not in ansible_facts.packages or grip_version not in ansible_facts.packages['grip'][0]['version']"

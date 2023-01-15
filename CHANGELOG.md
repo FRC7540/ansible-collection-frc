@@ -10,7 +10,7 @@ and this project adheres to
 
 ### Added
 
-- add role for installing balena etcher
+- add vision_tools role for installing balena etcher and GRIP
 
 ## [1.1.0] - 2023-01-07
 

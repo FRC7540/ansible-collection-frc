@@ -1,3 +1,3 @@
 ---
-balena_etcher_version: "1.13.3"
 balena_etcher_url: "https://github.com/balena-io/etcher/releases/download/v{{ balena_etcher_version }}/balena-etcher_{{ balena_etcher_version }}_amd64.deb"
+grip_url: "https://github.com/WPIRoboticsProjects/GRIP/releases/download/v{{ grip_version }}/grip-{{ grip_version }}-x64.deb"

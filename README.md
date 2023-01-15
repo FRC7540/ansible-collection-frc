@@ -6,10 +6,10 @@ specifically for WPILib related tools.
 The following roles are included:
 
 - [wpilib]: manages installations of WPILib development environments
-- [balena_etcher]: installs balena etcher for flashing Raspberry Pis, Limelights, etc.
+- [vision_tools]: installs Balena Etcher and GRIP
 
 [wpilib]: ./roles/wpilib/README.md
-[wpilib]: ./roles/balena_etcher/README.md
+[vision_tools]: ./roles/balena_etcher/README.md
 
 ## Installation
 
@@ -33,7 +33,7 @@ If you just want to install wpilib for the current user, create a playbook
     - localhost
   roles:
     - frc7540.frc.wpilib
-    - frc7540.frc.balena_etcher
+    - frc7540.frc.vision_tools
 ```
 
 Run it using:

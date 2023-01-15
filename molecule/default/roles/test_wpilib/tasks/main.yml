@@ -10,3 +10,6 @@
 
 - name: Include Balena etcher tests
   ansible.builtin.include_tasks: test_balena_etcher.yml
+
+- name: Include GRIP tests
+  ansible.builtin.include_tasks: test_grip.yml
