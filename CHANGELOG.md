@@ -12,6 +12,10 @@ and this project adheres to
 
 - add vision_tools role for installing balena etcher and GRIP
 
+### Changed
+
+- update WPILib to 2023.2.1
+
 ## [1.1.0] - 2023-01-07
 
 ### Added

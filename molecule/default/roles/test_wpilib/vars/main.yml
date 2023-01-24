@@ -20,7 +20,7 @@ test_vscode:
     - redhat.java-1.13.0
     - vscjava.vscode-java-debug-0.47.0
     - vscjava.vscode-java-dependency-0.21.1
-    - wpilibsuite.vscode-wpilib-2023.1.1
+    - wpilibsuite.vscode-wpilib-2023.2.1
 
 test_shortcut:
   mode: '0775'
