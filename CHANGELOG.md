@@ -11,6 +11,7 @@ and this project adheres to
 ### Added
 
 - add vision_tools role for installing balena etcher and GRIP
+- add shuffleboard shortcut and custom icon
 
 ### Changed
 

@@ -7,3 +7,7 @@ wpilib_artifacts_archive: "{{ wpilib_base }}/{{ wpilib_base }}-artifacts.tar.gz"
 gradle_install_dirs:
   - .gradle/permwrapper/dists
   - .gradle/wrapper/dists
+
+shortcuts:
+  - frccode
+  - shuffleboard

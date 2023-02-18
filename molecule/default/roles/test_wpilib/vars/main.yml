@@ -24,3 +24,6 @@ test_vscode:
 
 test_shortcut:
   mode: '0775'
+  list:
+    - frccode.desktop
+    - shuffleboard.desktop

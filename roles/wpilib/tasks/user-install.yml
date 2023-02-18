@@ -37,11 +37,20 @@
         - "{{ wpilib_home.path }}/vscode/data/extensions"
         - "{{ wpilib_home.path }}/vscode/data/user-data/User"
         - "/home/{{ user }}/.local/share/applications"
+        - "/home/{{ user }}/.local/share/pixmaps"
         - "/home/{{ user }}/Desktop"
 
     - name: Install wpilib extensions
       frc7540.frc.wpilib_extensions:
         path: "{{ wpilib_home.path }}"
+
+    - name: Add shortcut icon
+      ansible.builtin.copy:
+        src: shuffleboard.png
+        dest: "/home/{{ user }}/.local/share/pixmaps/shuffleboard.png"
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: "0664"
 
     - name: Render FRC vscode settings
       ansible.builtin.template:
@@ -51,33 +60,38 @@
         group: "{{ user }}"
         mode: "0664"
 
-    - name: Render frc vscode shortcut
+    - name: Render shortcuts
       ansible.builtin.template:
-        src: frccode.desktop.j2
-        dest: "/home/{{ user }}/.local/share/applications/frccode.desktop"
+        src: "{{ item }}.desktop.j2"
+        dest: "/home/{{ user }}/.local/share/applications/{{ item }}.desktop"
         owner: "{{ user }}"
         group: "{{ user }}"
         mode: "0775"
+      loop: "{{ shortcuts }}"
+      register: shortcut_files
 
-    - name: Check if shortcut is trusted
+    - name: Check if shortcuts are trusted
       ansible.builtin.shell:
-        cmd: "dbus-launch gio info /home/{{ user }}/.local/share/applications/frccode.desktop | grep metadata::trusted | xargs echo | cut -d ' ' -f 2"
-      register: shortcut_trusted
-      changed_when: shortcut_trusted.stdout != "true"
+        cmd: "dbus-launch gio info {{ item }} | grep metadata::trusted | xargs echo | cut -d ' ' -f 2"
+      register: shortcut_files_trusted
+      changed_when: false
+      loop: "{{ shortcut_files.results | map(attribute='dest') }}"
 
-    - name: Make shortcut trusted
+    - name: Make shortcuts trusted
       ansible.builtin.shell:
-        cmd: "dbus-launch gio set /home/{{ user }}/.local/share/applications/frccode.desktop metadata::trusted true"
-      when: shortcut_trusted.stdout != "true"
+        cmd: "dbus-launch gio set {{ item.item }} metadata::trusted true"
+      when: item.stdout != "true"
+      loop: "{{ shortcut_files_trusted.results }}"
 
     - name: Create desktop shortcut link
       ansible.builtin.file:
-        src: "/home/{{ user }}/.local/share/applications/frccode.desktop"
-        path: "/home/{{ user }}/Desktop/frccode.desktop"
+        src: "/home/{{ user }}/.local/share/applications/{{ item }}.desktop"
+        path: "/home/{{ user }}/Desktop/{{ item }}.desktop"
         state: link
         owner: "{{ user }}"
         group: "{{ user }}"
         mode: "0775"
+      loop: "{{ shortcuts }}"
 
     - name: Slurp install configuration
       ansible.builtin.slurp:
