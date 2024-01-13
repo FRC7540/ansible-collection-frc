@@ -3,7 +3,129 @@
   hosts: all
   vars:
     test_wpilib_user: vagrant
+    test_wpilib_group: "vagrant"
     wpilib_users:
       - "{{ test_wpilib_user }}"
-  roles:
-    - role: test_wpilib
+    test_wpilib_mode: "0775"
+    test_wpilib_home: "/home/vagrant"
+
+    test_install:
+      wpilib_version: 2023.1.1
+      wpilib_major_version: 2023
+
+    test_install_home:
+      "{{ test_wpilib_home }}/wpilib/{{ test_install.wpilib_major_version }}"
+
+    test_gradle:
+      version: 7.5.1
+      hash: 7jzzequgds1hbszbhq3npc5ng
+
+    test_vscode:
+      extensions:
+        - ms-vscode.cpptools-1.13.8
+        - redhat.java-1.13.0
+        - vscjava.vscode-java-debug-0.47.0
+        - vscjava.vscode-java-dependency-0.21.1
+        - wpilibsuite.vscode-wpilib-2023.2.1
+
+    test_shortcut:
+      mode: "0775"
+      list:
+        - frccode.desktop
+        - shuffleboard.desktop
+  tasks:
+    - name: Gather information on app shortcut
+      ansible.builtin.stat:
+        path: "{{ test_wpilib_home }}/.local/share/applications/{{ item }}"
+      register: test_shortcut_stats
+      loop: "{{ test_shortcut.list }}"
+
+    - name: Assert app shortcut properties
+      ansible.builtin.assert:
+        that:
+          - desktop_shortcut_file.stat.exists
+          - desktop_shortcut_file.stat.mode == test_shortcut.mode
+      loop: "{{ test_shortcut_stats.results }}"
+      loop_control:
+        loop_var: desktop_shortcut_file
+
+    - name: Check shortcut metadata
+      ansible.builtin.shell:
+        cmd:
+          "dbus-launch gio info {{ desktop_shortcut_file.stat.path }} | grep
+          metadata::trusted | xargs echo | cut -d ' ' -f 2"
+      register: shortcuts_trusted
+      changed_when: false
+      become: true
+      become_user: "{{ test_wpilib_user }}"
+      loop: "{{ test_shortcut_stats.results }}"
+      loop_control:
+        loop_var: desktop_shortcut_file
+
+    - name: Assert app shortcut is trusted
+      ansible.builtin.assert:
+        that:
+          - shortcut_trusted.stdout == "true"
+      loop: "{{ shortcuts_trusted.results }}"
+      loop_control:
+        loop_var: shortcut_trusted
+
+    - name: Gather information on extensions
+      ansible.builtin.stat:
+        path: "{{ test_install_home }}/vscode/data/extensions/{{ item }}"
+      loop: "{{ test_vscode.extensions }}"
+      register: extensions
+
+    - name: Assert extensions are present
+      ansible.builtin.assert:
+        that:
+          - extensions_dir.stat.exists
+      loop: "{{ extensions.results }}"
+      loop_control:
+        loop_var: extensions_dir
+
+    - name: Gather information on installed settings
+      ansible.builtin.stat:
+        path: "{{ test_install_home }}/vscode/data/user-data/User/settings.json"
+      register: settings_file
+
+    - name: Assert settings file is created
+      ansible.builtin.assert:
+        that:
+          - settings_file.stat.exists
+
+    - name: Read settings file
+      ansible.builtin.slurp:
+        path: "{{ test_install_home }}/vscode/data/user-data/User/settings.json"
+      register: settings
+
+    - name: Extract facts from settings
+      ansible.builtin.set_fact:
+        settings: "{{ settings.content | b64decode | from_json }}"
+
+    - name: Assert Configuration
+      ansible.builtin.assert:
+        that:
+          - "'/usr/lib/jvm' in settings['java.home']"
+
+    - name: Gather information on gradle installation
+      ansible.builtin.stat:
+        path:
+          "{{ test_wpilib_home }}/.gradle/{{ item }}/dists/gradle-{{
+          test_gradle.version }}-bin/{{ test_gradle.hash }}"
+      loop:
+        - wrapper
+        - permwrapper
+      register: directories
+
+    - name: Assert gradle installation is created
+      ansible.builtin.assert:
+        that:
+          - wrapper_dir.stat.exists
+          - wrapper_dir.stat.isdir
+          - wrapper_dir.stat.mode == test_wpilib_mode
+          - wrapper_dir.stat.pw_name == test_wpilib_user
+          - wrapper_dir.stat.gr_name == test_wpilib_group
+      loop: "{{ directories.results }}"
+      loop_control:
+        loop_var: wrapper_dir

@@ -4,6 +4,11 @@ wpilib_url: "https://github.com/wpilibsuite/allwpilib/releases/download/v{{ wpil
 wpilib_archive: "{{ wpilib_base }}.tar.gz"
 wpilib_artifacts_archive: "{{ wpilib_base }}/{{ wpilib_base }}-artifacts.tar.gz"
 
+java_release: openjdk-17-jdk
+java_home: /usr/lib/jvm/java-17-openjdk-amd64
+
+full_config_file: installUtils/fullConfig.json
+
 gradle_install_dirs:
   - .gradle/permwrapper/dists
   - .gradle/wrapper/dists

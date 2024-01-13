@@ -1,5 +1,5 @@
 {
-  "java.home": "{{ wpilib_home.path }}/jdk",
+  "java.home": "{{ java_home }}",
   "extensions.autoUpdate": false,
   "extensions.autoCheckUpdates": false,
   "extensions.ignoreRecommendations": true,
@@ -8,7 +8,7 @@
   "update.showReleaseNotes": false,
   "http.systemCertificates": false,
   "terminal.integrated.env.linux": {
-    "JAVA_HOME": "{{ wpilib_home.path }}/jdk",
-    "PATH": "{{ wpilib_home.path }}/jdk/bin:${env:PATH}"
+    "JAVA_HOME": "{{ java_home }}",
+    "PATH": "{{ java_home }}/bin:${env:PATH}"
   }
 }

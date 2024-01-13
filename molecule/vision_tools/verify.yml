@@ -1,0 +1,13 @@
+---
+- name: Verify
+  hosts: all
+  tasks: 
+    - name: Get installed packages
+      ansible.builtin.package_facts:
+        manager: "apt"
+
+    - name: Verify vision tools installed
+      ansible.builtin.assert:
+        that:
+          - "'balena-etcher' in ansible_facts.packages"
+          - "'grip' in ansible_facts.packages"

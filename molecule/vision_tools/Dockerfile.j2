@@ -14,7 +14,7 @@ ENV {{ var }} {{ value }}
 {% endfor %}
 {% endif %}
 
-RUN apt-get update && apt-get install -y python3 sudo bash ca-certificates iproute2 init && apt-get clean;
+RUN apt-get update && apt-get install -y python3 python3-apt sudo bash ca-certificates iproute2 init && apt-get clean;
 
 # Centos:8 + ansible 2.7 failed with error: "The module failed to execute correctly, you probably need to set the interpreter"
 # Solution: ln -s /usr/bin/python3 /usr/bin/python

@@ -1,24 +1,15 @@
 ---
 dependency:
   name: galaxy
-  options:
-    role-file: requirements.yml
-    requirements-file: requirements.yml
-
-lint: |
-  set -e
-  yamllint roles
-  ansible-lint roles
-  flake8 plugins
 
 driver:
   name: podman
 
 platforms:
-  - name: ubuntu-focal
+  - name: vision-focal
     image: ubuntu:20.04
     pre_build_image: false
-  - name: ubuntu-jammy
+  - name: vision-jammy
     image: ubuntu:22.04
     pre_build_image: false
 
@@ -26,14 +17,11 @@ provisioner:
   name: ansible
   config_options:
     defaults:
-      stdout_callback: debug
-      stderr_callback: debug
-
-verifier:
-  name: ansible
+      stdout_callback: yaml
+      stderr_callback: yaml
 
 scenario:
-  name: default
+  name: vision_tools
   test_sequence:
     - lint
     - destroy

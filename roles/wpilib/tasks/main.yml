@@ -10,11 +10,12 @@
       - python3
       - tar
       - unzip
+      - "{{ java_release }}"
     state: present
     use: apt
   become: true
 
-- name: Install vscode
+- name: Install vscode (non Pop! OS)
   ansible.builtin.include_role:
     name: gantsign.visual-studio-code
   when: ansible_distribution != 'Pop!_OS'
@@ -31,16 +32,19 @@
   ansible.builtin.package:
     name:
       - git
-      - neovim
       - tree
+      - vim
   become: true
 
-- name: Create wpilib global install root
+- name: Create global install directories
   ansible.builtin.file:
-    dest: "{{ wpilib_install_root }}"
+    dest: "{{ item }}"
     state: directory
     recurse: true
   become: true
+  loop:
+    - "{{ wpilib_install_root }}"
+    - "{{ gradle_install_root }}"
 
 - name: Download wpilib release
   ansible.builtin.get_url:
@@ -56,6 +60,42 @@
     include: "{{ wpilib_artifacts_archive }}"
     creates: "{{ wpilib_install_root }}/{{ wpilib_artifacts_archive }}"
     remote_src: true
+  become: true
+
+- name: Unpack Config files
+  ansible.builtin.unarchive:
+    src: "{{ wpilib_install_root }}/{{ wpilib_artifacts_archive }}"
+    dest: "{{ wpilib_install_root }}/{{ wpilib_base }}"
+    include: "{{ full_config_file }}"
+    creates: "{{ wpilib_install_root }}/{{ wpilib_base }}/{{ full_config_file }}"
+    remote_src: true
+
+- name: Load in the full configuration file
+  ansible.builtin.slurp:
+    src: "{{ wpilib_install_root }}/{{ wpilib_base }}/{{ full_config_file }}"
+  register: full_config_data
+
+- name: Convert the config file into facts
+  ansible.builtin.set_fact:
+    full_config: "{{ full_config_data.content | b64decode | from_json }}"
+
+- name: Extract the included Gradle release
+  ansible.builtin.unarchive:
+    src: "{{ wpilib_install_root }}/{{ wpilib_artifacts_archive }}"
+    dest: "{{ wpilib_install_root }}/{{ wpilib_base }}"
+    include: "installUtils/{{ full_config.Gradle.ZipName }}"
+    remote_src: yes
+  become: true
+
+- name: Extract the included Gradle release version
+  ansible.builtin.set_fact:
+    gradle_version: "{{ full_config.Gradle.ZipName.lstrip('gradle-').rstrip('-bin.zip') }}"
+
+- name: Install the included Gradle release
+  ansible.builtin.unarchive:
+    src: "{{ wpilib_install_root }}/{{ wpilib_base }}/installUtils/{{ full_config.Gradle.ZipName }}"
+    dest: "{{ gradle_install_root }}"
+    remote_src: yes
   become: true
 
 - name: Install wpilib for each user

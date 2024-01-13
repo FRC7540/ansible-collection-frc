@@ -19,7 +19,7 @@ This role has been tested for Java projects only. C++ projects may not work.
 | ------------------------ | --------------------------------------------------------- | ------------------------------------------------- |
 | `wpilib_release_version` | WPILib release version                                    | `2023.1.1`                                        |
 | `wpilib_release_hash`    | WPILib release version hash (usually a sha256 or md5)     | `md5:07c3..`                                      |
-| `wpilib_install_root`    | Directory to store WPILib archives prior to user installs | `/usr/local/wpilib`                               |
+| `wpilib_install_root`    | Directory to store WPILib archives prior to user installs | `/opt/wpilib`                                     |
 | `wpilib_users`           | A list of users that will get a WPILib installation       | `{{ ansible_env.USER }}` (i.e., the current user) |
 
 You can find the latest WPILib release version and archive hashes
@@ -49,7 +49,7 @@ special configruations are necessary.
 
 ## Comparison to the WPILib Installers
 
-The installation made by this role differes from the WPILib Linux installer in
+The installation made by this role differs from the WPILib Linux installer in
 several ways:
 
 - the mono based installer is not used at all
@@ -58,7 +58,7 @@ several ways:
   - user data still installed per-user in custom location
 - the desktop shortcut is slightly different
   - uses vscode flags to setting extensions and user-data
-
-## Known Issues
-
-- user install includes more directories than is strictly necessary
+- most content is installed globally instead of per-user:
+  - gradle is installed into `/opt/gradle`
+  - java is installed into `/opt/java`
+  - docs are installed into `/opt/wpilib/docs`

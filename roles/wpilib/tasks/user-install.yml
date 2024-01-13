@@ -2,27 +2,26 @@
   become: true
   become_user: "{{ user }}"
   block:
-    - name: Create wpilib directory
+    - name: Make sure the folder for the selected wpilib version year already exists
       ansible.builtin.file:
         path: "/home/{{ user }}/wpilib/{{ wpilib_release_version | split('.') | first }}"
         state: directory
         recurse: true
-        owner: "{{ user }}"
-        group: "{{ user }}"
       register: wpilib_home
 
-    - name: Check installed version
+    - name: Check if the selected wpilib version is already installed
       ansible.builtin.shell:
         cmd: "jq '.wpilibExtension.version' {{ wpilib_home.path }}/installUtils/vscodeConfig.json | xargs echo"
       register: installed_wpilib_version
       changed_when: installed_wpilib_version.stdout != wpilib_release_version
 
-    - name: Install wpilib
+    - name: Unpack the selected wpilib archive
       ansible.builtin.unarchive:
         src: "{{ wpilib_install_root }}/{{ wpilib_artifacts_archive }}"
         dest: "{{ wpilib_home.path }}"
-        owner: "{{ user }}"
-        group: "{{ user }}"
+        exclude:
+          - "installUtils/{{ full_config.Gradle.ZipName }}"
+          - "jdk"
         remote_src: True
       when: installed_wpilib_version.stdout != wpilib_release_version
 
@@ -31,8 +30,6 @@
         path: "{{ item }}"
         state: directory
         recurse: true
-        owner: "{{ user }}"
-        group: "{{ user }}"
       loop:
         - "{{ wpilib_home.path }}/vscode/data/extensions"
         - "{{ wpilib_home.path }}/vscode/data/user-data/User"
@@ -48,17 +45,11 @@
       ansible.builtin.copy:
         src: shuffleboard.png
         dest: "/home/{{ user }}/.local/share/pixmaps/shuffleboard.png"
-        owner: "{{ user }}"
-        group: "{{ user }}"
-        mode: "0664"
 
     - name: Render FRC vscode settings
       ansible.builtin.template:
         src: settings.json.j2
         dest: "{{ wpilib_home.path }}/vscode/data/user-data/User/settings.json"
-        owner: "{{ user }}"
-        group: "{{ user }}"
-        mode: "0664"
 
     - name: Render shortcuts
       ansible.builtin.template:
@@ -88,42 +79,29 @@
         src: "/home/{{ user }}/.local/share/applications/{{ item }}.desktop"
         path: "/home/{{ user }}/Desktop/{{ item }}.desktop"
         state: link
-        owner: "{{ user }}"
-        group: "{{ user }}"
         mode: "0775"
       loop: "{{ shortcuts }}"
 
-    - name: Slurp install configuration
-      ansible.builtin.slurp:
-        src: "{{ wpilib_home.path }}/installUtils/fullConfig.json"
-      register: full_config_data
-
-    - name: Set Gradle Facts
-      ansible.builtin.set_fact:
-        full_config: "{{ full_config_data.content | b64decode | from_json }}"
-
-    - name: Create Gradle installation directories
+    - name: Create directories for the included gradle wrapper distribution
       ansible.builtin.file:
         path: "/home/{{ user }}/{{ item }}/{{ (full_config.Gradle.ZipName | splitext)[0] }}/{{ full_config.Gradle.Hash }}"
         state: directory
         recurse: true
-        owner: "{{ user }}"
-        group: "{{ user }}"
       loop: "{{ gradle_install_dirs }}"
       register: gradle_install_paths
 
-    - name: Save a copy of the Gradle archive
-      ansible.builtin.copy:
-        src: "{{ wpilib_home.path }}/installUtils/{{ full_config.Gradle.ZipName }}"
-        dest: "{{ item }}/{{ full_config.Gradle.ZipName }}"
-        remote_src: yes
+    - name: Create the link to the global gradle install
+      ansible.builtin.file:
+        src: "{{ gradle_install_root }}/gradle-{{ gradle_version }}"
+        dest: "{{ item }}/gradle-{{ gradle_version }}"
+        state: link
       loop: "{{ gradle_install_paths.results | map(attribute='path') }}"
 
-    - name: Install Gradle archives
-      ansible.builtin.unarchive:
-        src: "{{ item }}/{{ full_config.Gradle.ZipName }}"
-        dest: "{{ item }}"
-        remote_src: yes
+    - name: Create the link to the global gradle zip
+      ansible.builtin.file:
+        src: "{{ wpilib_install_root }}/{{ wpilib_base }}/installUtils/{{ full_config.Gradle.ZipName }}"
+        dest: "{{ item }}/{{ full_config.Gradle.ZipName }}"
+        state: link
       loop: "{{ gradle_install_paths.results | map(attribute='path') }}"
 
     - name: Create Gradle lck files
